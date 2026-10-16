@@ -1,0 +1,476 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000012C1B000100000001 /* PrivateLLMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000012C1B000100000001 /* PrivateLLMApp.swift */; };
+		A10000022C1B000100000002 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000022C1B000100000002 /* ChatMessage.swift */; };
+		A10000032C1B000100000003 /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000032C1B000100000003 /* ChatSession.swift */; };
+		A10000042C1B000100000004 /* LocalModelItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000042C1B000100000004 /* LocalModelItem.swift */; };
+		A10000052C1B000100000005 /* ModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000052C1B000100000005 /* ModelCatalog.swift */; };
+		A10000062C1B000100000006 /* SystemPersona.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000062C1B000100000006 /* SystemPersona.swift */; };
+		A10000072C1B000100000007 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000072C1B000100000007 /* APIConfiguration.swift */; };
+		A10000082C1B000100000008 /* LLMInferenceEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000082C1B000100000008 /* LLMInferenceEngine.swift */; };
+		A10000092C1B000100000009 /* OfflineKnowledgeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000092C1B000100000009 /* OfflineKnowledgeEngine.swift */; };
+		A10000102C1B000100000010 /* MetalLLMEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000102C1B000100000010 /* MetalLLMEngine.swift */; };
+		A10000112C1B000100000011 /* CloudGeminiEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000112C1B000100000011 /* CloudGeminiEngine.swift */; };
+		A10000122C1B000100000012 /* CloudOpenAIEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000122C1B000100000012 /* CloudOpenAIEngine.swift */; };
+		A10000132C1B000100000013 /* AudioSpeechManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000132C1B000100000013 /* AudioSpeechManager.swift */; };
+		A10000142C1B000100000014 /* ChatStorageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000142C1B000100000014 /* ChatStorageRepository.swift */; };
+		A10000152C1B000100000015 /* ModelDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000152C1B000100000015 /* ModelDownloadManager.swift */; };
+		A10000162C1B000100000016 /* HardwareMemoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000162C1B000100000016 /* HardwareMemoryMonitor.swift */; };
+		A10000172C1B000100000017 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000172C1B000100000017 /* StoreKitManager.swift */; };
+		A10000182C1B000100000018 /* AskPrivateLLMIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000182C1B000100000018 /* AskPrivateLLMIntent.swift */; };
+		A10000192C1B000100000019 /* SummarizeOfflineIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000192C1B000100000019 /* SummarizeOfflineIntent.swift */; };
+		A10000202C1B000100000020 /* PrivateLLMShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000202C1B000100000020 /* PrivateLLMShortcutsProvider.swift */; };
+		A10000212C1B000100000021 /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000212C1B000100000021 /* MarkdownFormatter.swift */; };
+		A10000222C1B000100000022 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000222C1B000100000022 /* PDFExportService.swift */; };
+		A10000232C1B000100000023 /* MarkdownExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000232C1B000100000023 /* MarkdownExportService.swift */; };
+		A10000242C1B000100000024 /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000242C1B000100000024 /* HapticsManager.swift */; };
+		A10000252C1B000100000025 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000252C1B000100000025 /* ChatViewModel.swift */; };
+		A10000262C1B000100000026 /* ModelManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000262C1B000100000026 /* ModelManagerViewModel.swift */; };
+		A10000272C1B000100000027 /* SessionsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000272C1B000100000027 /* SessionsListViewModel.swift */; };
+		A10000282C1B000100000028 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000282C1B000100000028 /* SettingsViewModel.swift */; };
+		A10000292C1B000100000029 /* TypingIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000292C1B000100000029 /* TypingIndicatorView.swift */; };
+		A10000302C1B000100000030 /* CodeBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000302C1B000100000030 /* CodeBlockView.swift */; };
+		A10000312C1B000100000031 /* MessageBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000312C1B000100000031 /* MessageBubbleView.swift */; };
+		A10000322C1B000100000032 /* PromptSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000322C1B000100000032 /* PromptSuggestionsView.swift */; };
+		A10000332C1B000100000033 /* MessageInputBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000332C1B000100000033 /* MessageInputBarView.swift */; };
+		A10000342C1B000100000034 /* ChatHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000342C1B000100000034 /* ChatHeaderView.swift */; };
+		A10000352C1B000100000035 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000352C1B000100000035 /* ChatView.swift */; };
+		A10000362C1B000100000036 /* SessionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000362C1B000100000036 /* SessionRowView.swift */; };
+		A10000372C1B000100000037 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000372C1B000100000037 /* SearchBarView.swift */; };
+		A10000382C1B000100000038 /* SessionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000382C1B000100000038 /* SessionListView.swift */; };
+		A10000392C1B000100000039 /* HardwareBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000392C1B000100000039 /* HardwareBadgeView.swift */; };
+		A10000402C1B000100000040 /* ModelCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000402C1B000100000040 /* ModelCardView.swift */; };
+		A10000412C1B000100000041 /* ModelCatalogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000412C1B000100000041 /* ModelCatalogSheetView.swift */; };
+		A10000422C1B000100000042 /* StoreKitPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000422C1B000100000042 /* StoreKitPaywallView.swift */; };
+		A10000432C1B000100000043 /* SystemPromptEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000432C1B000100000043 /* SystemPromptEditorView.swift */; };
+		A10000442C1B000100000044 /* AdvancedInferenceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000442C1B000100000044 /* AdvancedInferenceSettingsView.swift */; };
+		A10000452C1B000100000045 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000452C1B000100000045 /* SettingsView.swift */; };
+		A10000462C1B000100000046 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000462C1B000100000046 /* ShareSheetView.swift */; };
+		A10000472C1B000100000047 /* MainSplitNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000472C1B000100000047 /* MainSplitNavigationView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B10000002C1B000100000000 /* PrivateLLM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrivateLLM.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000012C1B000100000001 /* PrivateLLMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateLLMApp.swift; sourceTree = "<group>"; };
+		B10000022C1B000100000002 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		B10000032C1B000100000003 /* ChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSession.swift; sourceTree = "<group>"; };
+		B10000042C1B000100000004 /* LocalModelItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelItem.swift; sourceTree = "<group>"; };
+		B10000052C1B000100000005 /* ModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalog.swift; sourceTree = "<group>"; };
+		B10000062C1B000100000006 /* SystemPersona.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPersona.swift; sourceTree = "<group>"; };
+		B10000072C1B000100000007 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
+		B10000082C1B000100000008 /* LLMInferenceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMInferenceEngine.swift; sourceTree = "<group>"; };
+		B10000092C1B000100000009 /* OfflineKnowledgeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineKnowledgeEngine.swift; sourceTree = "<group>"; };
+		B10000102C1B000100000010 /* MetalLLMEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalLLMEngine.swift; sourceTree = "<group>"; };
+		B10000112C1B000100000011 /* CloudGeminiEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudGeminiEngine.swift; sourceTree = "<group>"; };
+		B10000122C1B000100000012 /* CloudOpenAIEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudOpenAIEngine.swift; sourceTree = "<group>"; };
+		B10000132C1B000100000013 /* AudioSpeechManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSpeechManager.swift; sourceTree = "<group>"; };
+		B10000142C1B000100000014 /* ChatStorageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStorageRepository.swift; sourceTree = "<group>"; };
+		B10000152C1B000100000015 /* ModelDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloadManager.swift; sourceTree = "<group>"; };
+		B10000162C1B000100000016 /* HardwareMemoryMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareMemoryMonitor.swift; sourceTree = "<group>"; };
+		B10000172C1B000100000017 /* StoreKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitManager.swift; sourceTree = "<group>"; };
+		B10000182C1B000100000018 /* AskPrivateLLMIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskPrivateLLMIntent.swift; sourceTree = "<group>"; };
+		B10000192C1B000100000019 /* SummarizeOfflineIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummarizeOfflineIntent.swift; sourceTree = "<group>"; };
+		B10000202C1B000100000020 /* PrivateLLMShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateLLMShortcutsProvider.swift; sourceTree = "<group>"; };
+		B10000212C1B000100000021 /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
+		B10000222C1B000100000022 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
+		B10000232C1B000100000023 /* MarkdownExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownExportService.swift; sourceTree = "<group>"; };
+		B10000242C1B000100000024 /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsManager.swift; sourceTree = "<group>"; };
+		B10000252C1B000100000025 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		B10000262C1B000100000026 /* ModelManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerViewModel.swift; sourceTree = "<group>"; };
+		B10000272C1B000100000027 /* SessionsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsListViewModel.swift; sourceTree = "<group>"; };
+		B10000282C1B000100000028 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		B10000292C1B000100000029 /* TypingIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicatorView.swift; sourceTree = "<group>"; };
+		B10000302C1B000100000030 /* CodeBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeBlockView.swift; sourceTree = "<group>"; };
+		B10000312C1B000100000031 /* MessageBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubbleView.swift; sourceTree = "<group>"; };
+		B10000322C1B000100000032 /* PromptSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSuggestionsView.swift; sourceTree = "<group>"; };
+		B10000332C1B000100000033 /* MessageInputBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputBarView.swift; sourceTree = "<group>"; };
+		B10000342C1B000100000034 /* ChatHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHeaderView.swift; sourceTree = "<group>"; };
+		B10000352C1B000100000035 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		B10000362C1B000100000036 /* SessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRowView.swift; sourceTree = "<group>"; };
+		B10000372C1B000100000037 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
+		B10000382C1B000100000038 /* SessionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListView.swift; sourceTree = "<group>"; };
+		B10000392C1B000100000039 /* HardwareBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareBadgeView.swift; sourceTree = "<group>"; };
+		B10000402C1B000100000040 /* ModelCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCardView.swift; sourceTree = "<group>"; };
+		B10000412C1B000100000041 /* ModelCatalogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalogSheetView.swift; sourceTree = "<group>"; };
+		B10000422C1B000100000042 /* StoreKitPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitPaywallView.swift; sourceTree = "<group>"; };
+		B10000432C1B000100000043 /* SystemPromptEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPromptEditorView.swift; sourceTree = "<group>"; };
+		B10000442C1B000100000044 /* AdvancedInferenceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedInferenceSettingsView.swift; sourceTree = "<group>"; };
+		B10000452C1B000100000045 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B10000462C1B000100000046 /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
+		B10000472C1B000100000047 /* MainSplitNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitNavigationView.swift; sourceTree = "<group>"; };
+		B10000482C1B000100000048 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C10000002C1B000100000000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D10000002C1B000100000000 = {
+			isa = PBXGroup;
+			children = (
+				D10000012C1B000100000001 /* App */,
+				D10000022C1B000100000002 /* Models */,
+				D10000032C1B000100000003 /* Engines */,
+				D10000042C1B000100000004 /* Repositories */,
+				D10000052C1B000100000005 /* Intents */,
+				D10000062C1B000100000006 /* Utilities */,
+				D10000072C1B000100000007 /* ViewModels */,
+				D10000082C1B000100000008 /* Views */,
+				D10000092C1B000100000009 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D10000012C1B000100000001 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B10000012C1B000100000001 /* PrivateLLMApp.swift */,
+				B10000482C1B000100000048 /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		D10000022C1B000100000002 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B10000022C1B000100000002 /* ChatMessage.swift */,
+				B10000032C1B000100000003 /* ChatSession.swift */,
+				B10000042C1B000100000004 /* LocalModelItem.swift */,
+				B10000052C1B000100000005 /* ModelCatalog.swift */,
+				B10000062C1B000100000006 /* SystemPersona.swift */,
+				B10000072C1B000100000007 /* APIConfiguration.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D10000032C1B000100000003 /* Engines */ = {
+			isa = PBXGroup;
+			children = (
+				B10000082C1B000100000008 /* LLMInferenceEngine.swift */,
+				B10000092C1B000100000009 /* OfflineKnowledgeEngine.swift */,
+				B10000102C1B000100000010 /* MetalLLMEngine.swift */,
+				B10000112C1B000100000011 /* CloudGeminiEngine.swift */,
+				B10000122C1B000100000012 /* CloudOpenAIEngine.swift */,
+				B10000132C1B000100000013 /* AudioSpeechManager.swift */,
+			);
+			path = Engines;
+			sourceTree = "<group>";
+		};
+		D10000042C1B000100000004 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				B10000142C1B000100000014 /* ChatStorageRepository.swift */,
+				B10000152C1B000100000015 /* ModelDownloadManager.swift */,
+				B10000162C1B000100000016 /* HardwareMemoryMonitor.swift */,
+				B10000172C1B000100000017 /* StoreKitManager.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		D10000052C1B000100000005 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				B10000182C1B000100000018 /* AskPrivateLLMIntent.swift */,
+				B10000192C1B000100000019 /* SummarizeOfflineIntent.swift */,
+				B10000202C1B000100000020 /* PrivateLLMShortcutsProvider.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		D10000062C1B000100000006 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				B10000212C1B000100000021 /* MarkdownFormatter.swift */,
+				B10000222C1B000100000022 /* PDFExportService.swift */,
+				B10000232C1B000100000023 /* MarkdownExportService.swift */,
+				B10000242C1B000100000024 /* HapticsManager.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		D10000072C1B000100000007 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B10000252C1B000100000025 /* ChatViewModel.swift */,
+				B10000262C1B000100000026 /* ModelManagerViewModel.swift */,
+				B10000272C1B000100000027 /* SessionsListViewModel.swift */,
+				B10000282C1B000100000028 /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		D10000082C1B000100000008 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B10000472C1B000100000047 /* MainSplitNavigationView.swift */,
+				B10000292C1B000100000029 /* TypingIndicatorView.swift */,
+				B10000302C1B000100000030 /* CodeBlockView.swift */,
+				B10000312C1B000100000031 /* MessageBubbleView.swift */,
+				B10000322C1B000100000032 /* PromptSuggestionsView.swift */,
+				B10000332C1B000100000033 /* MessageInputBarView.swift */,
+				B10000342C1B000100000034 /* ChatHeaderView.swift */,
+				B10000352C1B000100000035 /* ChatView.swift */,
+				B10000362C1B000100000036 /* SessionRowView.swift */,
+				B10000372C1B000100000037 /* SearchBarView.swift */,
+				B10000382C1B000100000038 /* SessionListView.swift */,
+				B10000392C1B000100000039 /* HardwareBadgeView.swift */,
+				B10000402C1B000100000040 /* ModelCardView.swift */,
+				B10000412C1B000100000041 /* ModelCatalogSheetView.swift */,
+				B10000422C1B000100000042 /* StoreKitPaywallView.swift */,
+				B10000432C1B000100000043 /* SystemPromptEditorView.swift */,
+				B10000442C1B000100000044 /* AdvancedInferenceSettingsView.swift */,
+				B10000452C1B000100000045 /* SettingsView.swift */,
+				B10000462C1B000100000046 /* ShareSheetView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D10000092C1B000100000009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B10000002C1B000100000000 /* PrivateLLM.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E10000002C1B000100000000 /* PrivateLLM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F10000002C1B000100000000 /* Build configuration list for PBXNativeTarget "PrivateLLM" */;
+			buildPhases = (
+				G10000002C1B000100000000 /* Sources */,
+				C10000002C1B000100000000 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PrivateLLM;
+			productName = PrivateLLM;
+			productReference = B10000002C1B000100000000 /* PrivateLLM.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					E10000002C1B000100000000 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+				};
+			};
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "PrivateLLM" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D10000002C1B000100000000;
+			productRefGroup = D10000092C1B000100000009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E10000002C1B000100000000 /* PrivateLLM */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		G10000002C1B000100000000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000012C1B000100000001 /* PrivateLLMApp.swift in Sources */,
+				A10000022C1B000100000002 /* ChatMessage.swift in Sources */,
+				A10000032C1B000100000003 /* ChatSession.swift in Sources */,
+				A10000042C1B000100000004 /* LocalModelItem.swift in Sources */,
+				A10000052C1B000100000005 /* ModelCatalog.swift in Sources */,
+				A10000062C1B000100000006 /* SystemPersona.swift in Sources */,
+				A10000072C1B000100000007 /* APIConfiguration.swift in Sources */,
+				A10000082C1B000100000008 /* LLMInferenceEngine.swift in Sources */,
+				A10000092C1B000100000009 /* OfflineKnowledgeEngine.swift in Sources */,
+				A10000102C1B000100000010 /* MetalLLMEngine.swift in Sources */,
+				A10000112C1B000100000011 /* CloudGeminiEngine.swift in Sources */,
+				A10000122C1B000100000012 /* CloudOpenAIEngine.swift in Sources */,
+				A10000132C1B000100000013 /* AudioSpeechManager.swift in Sources */,
+				A10000142C1B000100000014 /* ChatStorageRepository.swift in Sources */,
+				A10000152C1B000100000015 /* ModelDownloadManager.swift in Sources */,
+				A10000162C1B000100000016 /* HardwareMemoryMonitor.swift in Sources */,
+				A10000172C1B000100000017 /* StoreKitManager.swift in Sources */,
+				A10000182C1B000100000018 /* AskPrivateLLMIntent.swift in Sources */,
+				A10000192C1B000100000019 /* SummarizeOfflineIntent.swift in Sources */,
+				A10000202C1B000100000020 /* PrivateLLMShortcutsProvider.swift in Sources */,
+				A10000212C1B000100000021 /* MarkdownFormatter.swift in Sources */,
+				A10000222C1B000100000022 /* PDFExportService.swift in Sources */,
+				A10000232C1B000100000023 /* MarkdownExportService.swift in Sources */,
+				A10000242C1B000100000024 /* HapticsManager.swift in Sources */,
+				A10000252C1B000100000025 /* ChatViewModel.swift in Sources */,
+				A10000262C1B000100000026 /* ModelManagerViewModel.swift in Sources */,
+				A10000272C1B000100000027 /* SessionsListViewModel.swift in Sources */,
+				A10000282C1B000100000028 /* SettingsViewModel.swift in Sources */,
+				A10000292C1B000100000029 /* TypingIndicatorView.swift in Sources */,
+				A10000302C1B000100000030 /* CodeBlockView.swift in Sources */,
+				A10000312C1B000100000031 /* MessageBubbleView.swift in Sources */,
+				A10000322C1B000100000032 /* PromptSuggestionsView.swift in Sources */,
+				A10000332C1B000100000033 /* MessageInputBarView.swift in Sources */,
+				A10000342C1B000100000034 /* ChatHeaderView.swift in Sources */,
+				A10000352C1B000100000035 /* ChatView.swift in Sources */,
+				A10000362C1B000100000036 /* SessionRowView.swift in Sources */,
+				A10000372C1B000100000037 /* SearchBarView.swift in Sources */,
+				A10000382C1B000100000038 /* SessionListView.swift in Sources */,
+				A10000392C1B000100000039 /* HardwareBadgeView.swift in Sources */,
+				A10000402C1B000100000040 /* ModelCardView.swift in Sources */,
+				A10000412C1B000100000041 /* ModelCatalogSheetView.swift in Sources */,
+				A10000422C1B000100000042 /* StoreKitPaywallView.swift in Sources */,
+				A10000432C1B000100000043 /* SystemPromptEditorView.swift in Sources */,
+				A10000442C1B000100000044 /* AdvancedInferenceSettingsView.swift in Sources */,
+				A10000452C1B000100000045 /* SettingsView.swift in Sources */,
+				A10000462C1B000100000046 /* ShareSheetView.swift in Sources */,
+				A10000472C1B000100000047 /* MainSplitNavigationView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F10000012C1B000100000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privatellm.localai;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F10000022C1B000100000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.privatellm.localai;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "PrivateLLM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F10000002C1B000100000000 /* Build configuration list for PBXNativeTarget "PrivateLLM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F10000012C1B000100000001 /* Debug */,
+				F10000022C1B000100000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
