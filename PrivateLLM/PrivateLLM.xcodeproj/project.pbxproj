@@ -299,9 +299,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F10000002C1B000100000000 /* Build configuration list for PBXNativeTarget "PrivateLLM" */;
 			buildPhases = (
-				G10000002C1B000100000000 /* Sources */,
+				A20000002C1B000100000000 /* Sources */,
 				C10000002C1B000100000000 /* Frameworks */,
-				R10000002C1B000100000000 /* Resources */,
+				A30000002C1B000100000000 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -346,7 +346,7 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		R10000002C1B000100000000 /* Resources */ = {
+		A30000002C1B000100000000 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -357,7 +357,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		G10000002C1B000100000000 /* Sources */ = {
+		A20000002C1B000100000000 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
