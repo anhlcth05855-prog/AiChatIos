@@ -47,17 +47,12 @@ public final class MetalLLMEngine: LLMInferenceEngine {
         parameters: InferenceParameters
     ) -> AsyncThrowingStream<String, Error> {
         return AsyncThrowingStream { continuation in
-            Task {
+            let task = Task {
                 do {
                     // Check if memory has learned context
-                    let memoryFeedback = OfflineKnowledgeEngine.shared.analyzeAndLearn(from: prompt)
+                    let memoryFeedback = OfflineKnowledgeEngine.shared.analyzeAndLearn(from: prompt, lang: parameters.language)
                     
-                    var baseText = OfflineKnowledgeEngine.shared.generateKnowledgeResponse(for: prompt)
-                    
-                    // If system prompt is provided and custom, append tone guidance
-                    if !parameters.systemPrompt.isEmpty {
-                        // Apply persona touch if applicable
-                    }
+                    var baseText = OfflineKnowledgeEngine.shared.generateKnowledgeResponse(for: prompt, lang: parameters.language)
                     
                     if let feedback = memoryFeedback {
                         baseText = "✨ *\(feedback)*\n\n\(baseText)"
@@ -80,9 +75,15 @@ public final class MetalLLMEngine: LLMInferenceEngine {
                     }
                     
                     continuation.finish()
+                } catch is CancellationError {
+                    continuation.finish()
                 } catch {
                     continuation.finish(throwing: error)
                 }
+            }
+            
+            continuation.onTermination = { _ in
+                task.cancel()
             }
         }
     }

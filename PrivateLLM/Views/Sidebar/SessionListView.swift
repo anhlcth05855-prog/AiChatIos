@@ -4,10 +4,16 @@ public struct SessionListView: View {
     @ObservedObject public var chatViewModel: ChatViewModel
     @StateObject private var listViewModel = SessionsListViewModel()
     @Binding public var showSettings: Bool
+    public var onNavigateToChat: (() -> Void)?
     
-    public init(chatViewModel: ChatViewModel, showSettings: Binding<Bool>) {
+    public init(
+        chatViewModel: ChatViewModel,
+        showSettings: Binding<Bool>,
+        onNavigateToChat: (() -> Void)? = nil
+    ) {
         self.chatViewModel = chatViewModel
         self._showSettings = showSettings
+        self.onNavigateToChat = onNavigateToChat
     }
     
     public var body: some View {
@@ -29,7 +35,10 @@ public struct SessionListView: View {
                             SessionRowView(
                                 session: session,
                                 isSelected: session.id == chatViewModel.currentSession.id,
-                                onSelect: { chatViewModel.selectSession(session) },
+                                onSelect: {
+                                    chatViewModel.selectSession(session)
+                                    onNavigateToChat?()
+                                },
                                 onPin: { listViewModel.togglePin(session: session) },
                                 onRename: { listViewModel.promptRename(session: session) },
                                 onDuplicate: { listViewModel.duplicate(session: session) },
@@ -50,7 +59,10 @@ public struct SessionListView: View {
                             SessionRowView(
                                 session: session,
                                 isSelected: session.id == chatViewModel.currentSession.id,
-                                onSelect: { chatViewModel.selectSession(session) },
+                                onSelect: {
+                                    chatViewModel.selectSession(session)
+                                    onNavigateToChat?()
+                                },
                                 onPin: { listViewModel.togglePin(session: session) },
                                 onRename: { listViewModel.promptRename(session: session) },
                                 onDuplicate: { listViewModel.duplicate(session: session) },
@@ -60,7 +72,11 @@ public struct SessionListView: View {
                     }
                 }
             }
-            .listStyle(InsetGroupedListStyle())
+            #if os(iOS)
+            .listStyle(.insetGrouped)
+            #else
+            .listStyle(.inset)
+            #endif
             
             Divider()
             
@@ -84,7 +100,10 @@ public struct SessionListView: View {
                 
                 Spacer()
                 
-                Button(action: { chatViewModel.startNewChat() }) {
+                Button(action: {
+                    chatViewModel.startNewChat()
+                    onNavigateToChat?()
+                }) {
                     HStack(spacing: 6) {
                         Image(systemName: "square.and.pencil")
                             .font(.system(size: 16, weight: .semibold))
@@ -97,7 +116,7 @@ public struct SessionListView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .background(Color(UIColor.secondarySystemBackground))
+            .background(Color.appSecondaryBackground)
         }
         .navigationTitle("Đoạn Chat")
         .alert("Đổi tên cuộc trò chuyện", isPresented: $listViewModel.showRenameDialog) {

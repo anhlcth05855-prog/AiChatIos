@@ -2,6 +2,8 @@ import SwiftUI
 
 public struct ChatHeaderView: View {
     @ObservedObject public var viewModel: ChatViewModel
+    @ObservedObject private var downloadManager = ModelDownloadManager.shared
+    @ObservedObject private var settingsViewModel = SettingsViewModel.shared
     @Binding public var showModelSheet: Bool
     @Binding public var exportURL: URL?
     @Binding public var showShareSheet: Bool
@@ -18,6 +20,19 @@ public struct ChatHeaderView: View {
         self._showShareSheet = showShareSheet
     }
     
+    private var headerSubtitle: String {
+        switch settingsViewModel.config.selectedProvider {
+        case .privateLLM:
+            return "100% On-Device & Offline"
+        case .mockOffline:
+            return "Offline Knowledge Engine"
+        case .googleGemini:
+            return "Cloud • \(settingsViewModel.config.geminiModel)"
+        case .openAI:
+            return "Cloud • \(settingsViewModel.config.openAiModel)"
+        }
+    }
+    
     public var body: some View {
         HStack(spacing: 8) {
             // Model Selector Capsule
@@ -28,19 +43,20 @@ public struct ChatHeaderView: View {
                 showModelSheet = true
             }) {
                 HStack(spacing: 6) {
-                    Image(systemName: "lock.shield.fill")
+                    Image(systemName: settingsViewModel.config.selectedProvider.badgeIcon)
                         .font(.system(size: 13, weight: .bold))
                         .foregroundColor(.accentColor)
                     
-                    let activeModel = viewModel.modelDownloadManager.getActiveModel()
+                    let activeModel = downloadManager.getActiveModel()
                     VStack(alignment: .leading, spacing: 0) {
                         Text(activeModel.name)
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundColor(Color.primary)
                             .lineLimit(1)
-                        Text("100% On-Device & Offline")
+                        Text(headerSubtitle)
                             .font(.system(size: 9.5, weight: .medium))
                             .foregroundColor(Color.secondary)
+                            .lineLimit(1)
                     }
                     
                     Image(systemName: "chevron.down")
@@ -49,7 +65,7 @@ public struct ChatHeaderView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(Color.appSecondaryBackground)
                 .cornerRadius(16)
             }
             .buttonStyle(PlainButtonStyle())
@@ -59,9 +75,11 @@ public struct ChatHeaderView: View {
             // Export Menu (PDF / Markdown)
             Menu {
                 Section("Xuất Dữ Liệu Hội Thoại") {
+                    #if canImport(UIKit)
                     Button(action: exportAsPDF) {
                         Label("Xuất ra PDF", systemImage: "doc.richtext")
                     }
+                    #endif
                     Button(action: exportAsMarkdown) {
                         Label("Xuất ra Markdown (.md)", systemImage: "arrow.down.doc")
                     }
@@ -77,13 +95,13 @@ public struct ChatHeaderView: View {
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(Color.accentColor)
                     .frame(width: 34, height: 34)
-                    .background(Color(UIColor.secondarySystemBackground))
+                    .background(Color.appSecondaryBackground)
                     .clipShape(Circle())
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .background(Color(UIColor.systemBackground))
+        .background(Color.appBackground)
     }
     
     private func exportAsPDF() {

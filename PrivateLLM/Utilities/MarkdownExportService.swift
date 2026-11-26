@@ -22,7 +22,12 @@ public final class MarkdownExportService {
             md += "\n\(role) *[\(msg.formattedTime)]*\n\n\(msg.content)\n\n"
         }
         
-        let fileName = "PrivateLLM_\(session.title.replacingOccurrences(of: " ", with: "_")).md"
+        let safeTitle = session.title
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+            .replacingOccurrences(of: " ", with: "_")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let fileName = "PrivateLLM_\(safeTitle.isEmpty ? "Chat" : safeTitle).md"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
         
         do {

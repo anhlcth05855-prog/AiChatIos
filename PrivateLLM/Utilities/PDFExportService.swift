@@ -21,8 +21,14 @@ public final class PDFExportService {
         
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect, format: format)
         
+        let safeTitle = session.title
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+            .replacingOccurrences(of: " ", with: "_")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let fileName = "PrivateLLM_\(safeTitle.isEmpty ? "Chat" : safeTitle).pdf"
         let tempURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("PrivateLLM_\(session.title.replacingOccurrences(of: " ", with: "_")).pdf")
+            .appendingPathComponent(fileName)
         
         do {
             try renderer.writePDF(to: tempURL) { context in

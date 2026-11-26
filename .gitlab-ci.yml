@@ -1,0 +1,27 @@
+stages:
+  - build
+
+build_ios:
+  stage: build
+  tags:
+    - saas-macos-medium-m1
+  script:
+    - xcodebuild -version
+    - |
+      xcodebuild \
+        -project PrivateLLM/PrivateLLM.xcodeproj \
+        -scheme PrivateLLM \
+        -configuration Release \
+        -sdk iphoneos \
+        -destination 'generic/platform=iOS' \
+        -derivedDataPath build \
+        CODE_SIGNING_ALLOWED=NO \
+        CODE_SIGNING_REQUIRED=NO \
+        build
+    - mkdir -p Payload
+    - cp -R build/Build/Products/Release-iphoneos/PrivateLLM.app Payload/
+    - zip -r PrivateLLM-unsigned.ipa Payload
+  artifacts:
+    paths:
+      - PrivateLLM-unsigned.ipa
+    expire_in: 7 days

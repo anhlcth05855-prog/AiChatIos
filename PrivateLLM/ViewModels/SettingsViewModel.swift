@@ -4,6 +4,8 @@ import SwiftUI
 @MainActor
 public final class SettingsViewModel: ObservableObject {
     
+    public static let shared = SettingsViewModel()
+    
     @Published public var config: AppConfiguration
     @Published public var selectedPersona: SystemPersona?
     @Published public var showResetMemoryAlert: Bool = false

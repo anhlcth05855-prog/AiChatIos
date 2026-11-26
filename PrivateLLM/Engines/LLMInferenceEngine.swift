@@ -5,6 +5,7 @@ public struct InferenceParameters {
     public var topP: Double
     public var maxTokens: Int
     public var systemPrompt: String
+    public var language: String
     public var stopSequences: [String]
     
     public init(
@@ -12,12 +13,14 @@ public struct InferenceParameters {
         topP: Double = 0.9,
         maxTokens: Int = 2048,
         systemPrompt: String = "",
+        language: String = "vi",
         stopSequences: [String] = ["<|im_end|>", "<|endoftext|>", "</s>"]
     ) {
         self.temperature = temperature
         self.topP = topP
         self.maxTokens = maxTokens
         self.systemPrompt = systemPrompt
+        self.language = language
         self.stopSequences = stopSequences
     }
 }

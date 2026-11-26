@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct SettingsView: View {
-    @StateObject private var viewModel = SettingsViewModel()
+    @ObservedObject private var viewModel = SettingsViewModel.shared
     @Environment(\.dismiss) private var dismiss
     
     public init() {}
@@ -62,12 +62,14 @@ public struct SettingsView: View {
                 }
             }
             .navigationTitle("Cài Đặt")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Đóng") { dismiss() }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Lưu") {
                         viewModel.saveConfiguration()
                         dismiss()

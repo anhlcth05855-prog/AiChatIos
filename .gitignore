@@ -1,0 +1,12 @@
+# macOS & Xcode
+.DS_Store
+*.xcuserstate
+*.xcuserdata
+xcuserdata/
+DerivedData/
+build/
+.build/
+.swiftpm/
+
+# Reference Android project (separate git repo)
+sample_android/

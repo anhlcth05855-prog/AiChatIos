@@ -45,7 +45,7 @@ public struct HardwareBadgeView: View {
             }
         }
         .padding(12)
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color.appSecondaryBackground)
         .cornerRadius(12)
         .overlay(
             RoundedRectangle(cornerRadius: 12)

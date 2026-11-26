@@ -43,9 +43,11 @@ public struct ModelCatalogSheetView: View {
                 .padding(.top, 12)
             }
             .navigationTitle("Mô Hình On-Device")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Xong") { dismiss() }
                         .font(.system(size: 15, weight: .semibold))
                 }
@@ -73,7 +75,7 @@ public struct ModelCatalogSheetView: View {
                 .foregroundColor(isSelected ? .white : .primary)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
-                .background(isSelected ? Color.accentColor : Color(UIColor.secondarySystemBackground))
+                .background(isSelected ? Color.accentColor : Color.appSecondaryBackground)
                 .cornerRadius(18)
         }
         .buttonStyle(PlainButtonStyle())

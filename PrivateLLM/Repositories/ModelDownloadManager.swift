@@ -10,6 +10,7 @@ public final class ModelDownloadManager: NSObject, ObservableObject, URLSessionD
     
     private let fileManager = FileManager.default
     private var downloadTasks: [String: URLSessionDownloadTask] = [:]
+    private var taskModelMap: [Int: String] = [:]
     private var backgroundSession: URLSession!
     
     private var modelsDirectory: URL {
@@ -43,11 +44,9 @@ public final class ModelDownloadManager: NSObject, ObservableObject, URLSessionD
                     models[i].status = .ready
                     models[i].downloadProgress = 1.0
                 }
-            } else {
-                if models[i].status != .downloading {
-                    models[i].status = .notDownloaded
-                    models[i].downloadProgress = 0.0
-                }
+            } else if models[i].status != .downloading {
+                models[i].status = .notDownloaded
+                models[i].downloadProgress = 0.0
             }
         }
     }
@@ -67,19 +66,44 @@ public final class ModelDownloadManager: NSObject, ObservableObject, URLSessionD
     
     public func setActiveModel(id: String) {
         guard models.contains(where: { $0.id == id }) else { return }
-        self.activeModelId = id
+        DispatchQueue.main.async {
+            self.activeModelId = id
+        }
         UserDefaults.standard.set(id, forKey: "PrivateLLM_ActiveModelId")
     }
     
     public func deleteModel(id: String) {
+        if let task = downloadTasks.removeValue(forKey: id) {
+            task.cancel()
+        }
         guard let idx = models.firstIndex(where: { $0.id == id }) else { return }
         let item = models[idx]
         let fileURL = modelsDirectory.appendingPathComponent(item.localFileName)
         if fileManager.fileExists(atPath: fileURL.path) {
             try? fileManager.removeItem(at: fileURL)
         }
-        models[idx].status = .notDownloaded
+        DispatchQueue.main.async {
+            if let currentIdx = self.models.firstIndex(where: { $0.id == id }) {
+                self.models[currentIdx].status = .notDownloaded
+                self.models[currentIdx].downloadProgress = 0.0
+                self.models[currentIdx].downloadSpeed = nil
+            }
+            self.isDownloadingAny = self.models.contains { $0.status == .downloading }
+        }
+    }
+    
+    public func startRealDownload(for modelId: String) {
+        guard let idx = models.firstIndex(where: { $0.id == modelId }),
+              let url = URL(string: models[idx].downloadUrl) else { return }
+        
+        models[idx].status = .downloading
         models[idx].downloadProgress = 0.0
+        isDownloadingAny = true
+        
+        let task = backgroundSession.downloadTask(with: url)
+        downloadTasks[modelId] = task
+        taskModelMap[task.taskIdentifier] = modelId
+        task.resume()
     }
     
     public func simulateQuickDownload(for modelId: String, onComplete: (() -> Void)? = nil) {
@@ -92,36 +116,96 @@ public final class ModelDownloadManager: NSObject, ObservableObject, URLSessionD
         let targetURL = modelsDirectory.appendingPathComponent(item.localFileName)
         
         var currentProgress: Double = 0.0
-        Timer.scheduledTimer(withTimeInterval: 0.15, repeats: true) { [weak self] timer in
-            guard let self = self else {
-                timer.invalidate()
-                return
-            }
-            currentProgress += 0.1
-            if currentProgress >= 1.0 {
-                timer.invalidate()
-                self.models[idx].downloadProgress = 1.0
-                self.models[idx].status = .ready
-                self.isDownloadingAny = false
-                
-                // Write placeholder weights header so fileExists is true
-                let mockHeader = "LOCAL_LLM_WEIGHTS_GGUF_HEADER_\(item.id)".data(using: .utf8) ?? Data()
-                try? mockHeader.write(to: targetURL)
-                
-                self.setActiveModel(id: item.id)
-                onComplete?()
-            } else {
-                self.models[idx].downloadProgress = currentProgress
+        DispatchQueue.main.async {
+            Timer.scheduledTimer(withTimeInterval: 0.15, repeats: true) { [weak self] timer in
+                guard let self = self,
+                      let currentIdx = self.models.firstIndex(where: { $0.id == modelId }) else {
+                    timer.invalidate()
+                    return
+                }
+                currentProgress += 0.1
+                if currentProgress >= 1.0 {
+                    timer.invalidate()
+                    self.models[currentIdx].downloadProgress = 1.0
+                    self.models[currentIdx].status = .ready
+                    self.isDownloadingAny = self.models.contains { $0.status == .downloading }
+                    
+                    // Write placeholder weights header so fileExists is true
+                    let mockHeader = "LOCAL_LLM_WEIGHTS_GGUF_HEADER_\(item.id)".data(using: .utf8) ?? Data()
+                    try? mockHeader.write(to: targetURL)
+                    
+                    self.setActiveModel(id: item.id)
+                    onComplete?()
+                } else {
+                    self.models[currentIdx].downloadProgress = currentProgress
+                }
             }
         }
     }
     
     // MARK: - URLSessionDownloadDelegate
     
-    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        // Handled when background downloads complete
+    public func urlSession(
+        _ session: URLSession,
+        downloadTask: URLSessionDownloadTask,
+        didWriteData bytesWritten: Int64,
+        totalBytesWritten: Int64,
+        totalBytesExpectedToWrite: Int64
+    ) {
+        guard let modelId = taskModelMap[downloadTask.taskIdentifier] else { return }
+        let progress = totalBytesExpectedToWrite > 0
+            ? Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
+            : 0.0
+        
         DispatchQueue.main.async {
-            self.refreshModelStatuses()
+            if let idx = self.models.firstIndex(where: { $0.id == modelId }) {
+                self.models[idx].downloadProgress = min(max(progress, 0.0), 1.0)
+            }
+        }
+    }
+    
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        guard let modelId = taskModelMap.removeValue(forKey: downloadTask.taskIdentifier),
+              let item = models.first(where: { $0.id == modelId }) else {
+            DispatchQueue.main.async {
+                self.refreshModelStatuses()
+            }
+            return
+        }
+        
+        let destinationURL = modelsDirectory.appendingPathComponent(item.localFileName)
+        try? fileManager.removeItem(at: destinationURL)
+        do {
+            try fileManager.moveItem(at: location, to: destinationURL)
+            DispatchQueue.main.async {
+                self.downloadTasks.removeValue(forKey: modelId)
+                self.refreshModelStatuses()
+                self.setActiveModel(id: modelId)
+                self.isDownloadingAny = self.models.contains { $0.status == .downloading }
+            }
+        } catch {
+            print("[ModelDownloadManager] Failed to move downloaded model: \(error)")
+            DispatchQueue.main.async {
+                self.downloadTasks.removeValue(forKey: modelId)
+                if let idx = self.models.firstIndex(where: { $0.id == modelId }) {
+                    self.models[idx].status = .error
+                }
+                self.isDownloadingAny = self.models.contains { $0.status == .downloading }
+            }
+        }
+    }
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard let error = error,
+              let modelId = taskModelMap.removeValue(forKey: task.taskIdentifier) else { return }
+        
+        DispatchQueue.main.async {
+            self.downloadTasks.removeValue(forKey: modelId)
+            if let idx = self.models.firstIndex(where: { $0.id == modelId }) {
+                self.models[idx].status = (error as NSError).code == NSURLErrorCancelled ? .notDownloaded : .error
+                self.models[idx].downloadProgress = 0.0
+            }
+            self.isDownloadingAny = self.models.contains { $0.status == .downloading }
         }
     }
 }

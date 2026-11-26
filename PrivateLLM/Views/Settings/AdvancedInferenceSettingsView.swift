@@ -23,7 +23,7 @@ public struct AdvancedInferenceSettingsView: View {
                 .pickerStyle(MenuPickerStyle())
                 .padding(8)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(Color.appSecondaryBackground)
                 .cornerRadius(10)
             }
             
@@ -37,13 +37,13 @@ public struct AdvancedInferenceSettingsView: View {
                     SecureField("Dán Gemini API Key vào đây", text: $config.geminiApiKey)
                         .font(.system(size: 13.5))
                         .padding(10)
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color.appSecondaryBackground)
                         .cornerRadius(10)
                     
                     TextField("Tên mô hình (vd: gemini-1.5-flash)", text: $config.geminiModel)
                         .font(.system(size: 13.5))
                         .padding(10)
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color.appSecondaryBackground)
                         .cornerRadius(10)
                 }
             } else if config.selectedProvider == .openAI {
@@ -55,13 +55,13 @@ public struct AdvancedInferenceSettingsView: View {
                     SecureField("sk-...", text: $config.openAiApiKey)
                         .font(.system(size: 13.5))
                         .padding(10)
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color.appSecondaryBackground)
                         .cornerRadius(10)
                     
                     TextField("Tên mô hình (vd: gpt-4o-mini)", text: $config.openAiModel)
                         .font(.system(size: 13.5))
                         .padding(10)
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color.appSecondaryBackground)
                         .cornerRadius(10)
                 }
             }
@@ -83,7 +83,7 @@ public struct AdvancedInferenceSettingsView: View {
                 .pickerStyle(MenuPickerStyle())
                 .padding(8)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(Color.appSecondaryBackground)
                 .cornerRadius(10)
             }
             

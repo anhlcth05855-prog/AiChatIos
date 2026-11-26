@@ -7,7 +7,9 @@ public struct MessageInputBarView: View {
     public let onStop: () -> Void
     
     @ObservedObject private var speechManager = AudioSpeechManager.shared
+    @ObservedObject private var settingsViewModel = SettingsViewModel.shared
     @FocusState private var isFocused: Bool
+    @State private var showPermissionAlert: Bool = false
     
     public init(
         text: Binding<String>,
@@ -34,7 +36,7 @@ public struct MessageInputBarView: View {
                         .frame(width: 36, height: 36)
                         .background(
                             Circle()
-                                .fill(speechManager.isRecording ? Color.red.opacity(0.15) : Color(UIColor.tertiarySystemBackground))
+                                .fill(speechManager.isRecording ? Color.red.opacity(0.15) : Color.appTertiaryBackground)
                         )
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -57,7 +59,7 @@ public struct MessageInputBarView: View {
                         .focused($isFocused)
                         .scrollContentBackground(.hidden)
                 }
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(Color.appSecondaryBackground)
                 .cornerRadius(18)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
@@ -94,7 +96,12 @@ public struct MessageInputBarView: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
-            .background(Color(UIColor.systemBackground))
+            .background(Color.appBackground)
+        }
+        .alert("Quyền truy cập Micro & Giọng nói", isPresented: $showPermissionAlert) {
+            Button("Đã hiểu", role: .cancel) {}
+        } message: {
+            Text("Vui lòng cấp quyền Micro và Nhận diện giọng nói trong Cài đặt iOS để sử dụng nhập liệu bằng giọng nói.")
         }
     }
     
@@ -105,11 +112,14 @@ public struct MessageInputBarView: View {
         if speechManager.isRecording {
             speechManager.stopRecording()
         } else {
+            let langCode = settingsViewModel.config.appLanguage
             speechManager.requestSpeechAuthorization { authorized in
                 if authorized {
-                    speechManager.startRecording { transcription in
+                    speechManager.startRecording(langCode: langCode) { transcription in
                         self.text = transcription
                     }
+                } else {
+                    self.showPermissionAlert = true
                 }
             }
         }

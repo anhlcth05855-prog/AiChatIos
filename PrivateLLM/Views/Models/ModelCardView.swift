@@ -152,7 +152,7 @@ public struct ModelCardView: View {
             .padding(.top, 2)
         }
         .padding(14)
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color.appSecondaryBackground)
         .cornerRadius(14)
         .overlay(
             RoundedRectangle(cornerRadius: 14)

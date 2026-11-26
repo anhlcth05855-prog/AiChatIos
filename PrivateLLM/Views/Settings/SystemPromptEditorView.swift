@@ -34,7 +34,7 @@ public struct SystemPromptEditorView: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.vertical, 7)
-                            .background(Color(UIColor.secondarySystemBackground))
+                            .background(Color.appSecondaryBackground)
                             .cornerRadius(10)
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -51,7 +51,7 @@ public struct SystemPromptEditorView: View {
                 .font(.system(size: 13.5))
                 .frame(minHeight: 90)
                 .padding(8)
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(Color.appSecondaryBackground)
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)

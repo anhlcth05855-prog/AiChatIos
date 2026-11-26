@@ -15,6 +15,7 @@ public final class ChatViewModel: ObservableObject {
     public let modelDownloadManager = ModelDownloadManager.shared
     public let hardwareMonitor = HardwareMemoryMonitor.shared
     public let speechManager = AudioSpeechManager.shared
+    public let settingsViewModel = SettingsViewModel.shared
     
     private let metalEngine = MetalLLMEngine()
     private var generationTask: Task<Void, Never>?
@@ -52,6 +53,10 @@ public final class ChatViewModel: ObservableObject {
         HapticsManager.shared.impact(.medium)
         #endif
         
+        let config = settingsViewModel.config
+        let activeModel = modelDownloadManager.getActiveModel()
+        currentSession.modelId = activeModel.id
+        
         let userMsg = ChatMessage(
             content: textToSend,
             sender: .user,
@@ -73,54 +78,145 @@ public final class ChatViewModel: ObservableObject {
         
         // Start Assistant Response
         isGenerating = true
-        let activeModel = modelDownloadManager.getActiveModel()
+        let displayModelName: String
+        switch config.selectedProvider {
+        case .privateLLM:
+            displayModelName = activeModel.name
+        case .mockOffline:
+            displayModelName = "Offline Knowledge Engine"
+        case .googleGemini:
+            displayModelName = "Gemini (\(config.geminiModel))"
+        case .openAI:
+            displayModelName = "OpenAI (\(config.openAiModel))"
+        }
         
-        var assistantMsg = ChatMessage(
+        let assistantMsg = ChatMessage(
             content: "",
             sender: .assistant,
             timestamp: Date(),
-            modelName: activeModel.name,
+            modelName: displayModelName,
             isStreaming: true
         )
         currentSession.messages.append(assistantMsg)
         
-        let assistantIndex = currentSession.messages.count - 1
+        let targetSessionId = currentSession.id
+        let assistantMsgId = assistantMsg.id
+        let historySnapshot = currentSession.messages.filter { $0.id != assistantMsgId && $0.sender != .status }
+        let effectiveSystemPrompt = (currentSession.systemPrompt?.isEmpty == false)
+            ? (currentSession.systemPrompt ?? config.systemPrompt)
+            : config.systemPrompt
         let startTime = Date()
         
         generationTask = Task {
             do {
-                let stream = metalEngine.generateStream(
-                    prompt: textToSend,
-                    history: currentSession.messages,
-                    parameters: InferenceParameters(
-                        temperature: currentSession.temperature,
-                        systemPrompt: currentSession.systemPrompt ?? ""
+                let finalText: String
+                switch config.selectedProvider {
+                case .privateLLM, .mockOffline:
+                    let params = InferenceParameters(
+                        temperature: config.temperature,
+                        topP: config.topP,
+                        maxTokens: config.maxTokens,
+                        systemPrompt: effectiveSystemPrompt,
+                        language: config.appLanguage
                     )
-                )
-                
-                for try await partial in stream {
-                    if Task.isCancelled { break }
-                    currentSession.messages[assistantIndex].content = partial
+                    let stream = metalEngine.generateStream(
+                        prompt: textToSend,
+                        history: historySnapshot,
+                        parameters: params
+                    )
+                    var latest = ""
+                    for try await partial in stream {
+                        if Task.isCancelled { break }
+                        latest = partial
+                        self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                            msg.content = partial
+                        }
+                    }
+                    finalText = latest
+                    
+                case .googleGemini:
+                    let reply = try await CloudGeminiEngine.shared.generateContent(
+                        apiKey: config.geminiApiKey,
+                        model: config.geminiModel,
+                        prompt: textToSend,
+                        systemInstruction: effectiveSystemPrompt,
+                        history: historySnapshot
+                    )
+                    try Task.checkCancellation()
+                    self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                        msg.content = reply
+                    }
+                    finalText = reply
+                    
+                case .openAI:
+                    let reply = try await CloudOpenAIEngine.shared.createChatCompletion(
+                        apiKey: config.openAiApiKey,
+                        model: config.openAiModel,
+                        prompt: textToSend,
+                        systemInstruction: effectiveSystemPrompt,
+                        history: historySnapshot
+                    )
+                    try Task.checkCancellation()
+                    self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                        msg.content = reply
+                    }
+                    finalText = reply
                 }
                 
-                let duration = Date().timeIntervalSince(startTime)
-                currentSession.messages[assistantIndex].isStreaming.value = false
-                currentSession.messages[assistantIndex].generationDuration = duration
-                currentSession.messages[assistantIndex].tokenCount = currentSession.messages[assistantIndex].content.components(separatedBy: " ").count
+                guard !Task.isCancelled else { return }
                 
-                storageRepo.updateSession(currentSession)
-                isGenerating = false
+                let duration = Date().timeIntervalSince(startTime)
+                self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                    msg.isStreaming.value = false
+                    msg.generationDuration = duration
+                    msg.tokenCount = max(1, msg.content.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count)
+                }
+                
+                if self.currentSession.id == targetSessionId {
+                    self.storageRepo.updateSession(self.currentSession)
+                    self.isGenerating = false
+                }
+                
+                if config.ttsAutoSpeak && !finalText.isEmpty {
+                    self.speechManager.speak(text: finalText, langCode: config.appLanguage)
+                }
                 
                 #if canImport(UIKit)
                 HapticsManager.shared.notify(.success)
                 #endif
                 
+            } catch is CancellationError {
+                self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                    msg.isStreaming.value = false
+                }
+                if self.currentSession.id == targetSessionId {
+                    self.storageRepo.updateSession(self.currentSession)
+                    self.isGenerating = false
+                }
             } catch {
-                currentSession.messages[assistantIndex].content += "\n\n⚠️ Đã dừng: \(error.localizedDescription)"
-                currentSession.messages[assistantIndex].isStreaming.value = false
-                storageRepo.updateSession(currentSession)
-                isGenerating = false
+                self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                    if msg.content.isEmpty {
+                        msg.content = "⚠️ Lỗi: \(error.localizedDescription)"
+                    } else {
+                        msg.content += "\n\n⚠️ Đã dừng: \(error.localizedDescription)"
+                    }
+                    msg.isStreaming.value = false
+                }
+                if self.currentSession.id == targetSessionId {
+                    self.storageRepo.updateSession(self.currentSession)
+                    self.isGenerating = false
+                }
             }
+        }
+    }
+    
+    private func updateAssistantMessage(id: UUID, inSession sessionId: UUID, mutate: (inout ChatMessage) -> Void) {
+        if currentSession.id == sessionId,
+           let idx = currentSession.messages.firstIndex(where: { $0.id == id }) {
+            mutate(&currentSession.messages[idx])
+        } else if let sIdx = storageRepo.sessions.firstIndex(where: { $0.id == sessionId }),
+                  let mIdx = storageRepo.sessions[sIdx].messages.firstIndex(where: { $0.id == id }) {
+            mutate(&storageRepo.sessions[sIdx].messages[mIdx])
         }
     }
     
@@ -162,7 +258,7 @@ public final class ChatViewModel: ObservableObject {
         if speechManager.isSpeaking {
             speechManager.stopSpeaking()
         } else {
-            speechManager.speak(text: message.content)
+            speechManager.speak(text: message.content, langCode: settingsViewModel.config.appLanguage)
         }
     }
 }

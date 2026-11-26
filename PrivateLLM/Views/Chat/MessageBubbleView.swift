@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 public struct MessageBubbleView: View {
     public let message: ChatMessage
@@ -91,7 +94,7 @@ public struct MessageBubbleView: View {
                     ForEach(segments) { segment in
                         switch segment.type {
                         case .text:
-                            Text(.init(segment.content))
+                            markdownTextView(segment.content)
                                 .font(.system(size: 15, weight: .regular))
                                 .foregroundColor(Color.primary)
                                 .lineSpacing(3.5)
@@ -103,7 +106,7 @@ public struct MessageBubbleView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(Color.appSecondaryBackground)
                 .clipShape(BubbleShape(isUser: false))
             }
             
@@ -153,6 +156,18 @@ public struct MessageBubbleView: View {
         }
     }
     
+    @ViewBuilder
+    private func markdownTextView(_ raw: String) -> some View {
+        if let attributed = try? AttributedString(
+            markdown: raw,
+            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        ) {
+            Text(attributed)
+        } else {
+            Text(raw)
+        }
+    }
+    
     private func copyContent() {
         #if canImport(UIKit)
         UIPasteboard.general.string = message.content
@@ -174,6 +189,7 @@ public struct BubbleShape: Shape {
     public let isUser: Bool
     
     public func path(in rect: CGRect) -> Path {
+        #if canImport(UIKit)
         let path = UIBezierPath(
             roundedRect: rect,
             byRoundingCorners: [
@@ -184,5 +200,8 @@ public struct BubbleShape: Shape {
             cornerRadii: CGSize(width: 18, height: 18)
         )
         return Path(path.cgPath)
+        #else
+        return RoundedRectangle(cornerRadius: 18, style: .continuous).path(in: rect)
+        #endif
     }
 }

@@ -8,8 +8,8 @@ public struct PrivateLLMShortcutsProvider: AppShortcutsProvider {
             phrases: [
                 "Hỏi \(.applicationName)",
                 "Trò chuyện với \(.applicationName)",
-                "Ask \(.applicationName) \(\.$prompt)",
-                "Hỏi AI Offline \(\.$prompt)"
+                "Ask \(.applicationName)",
+                "Hỏi AI Offline trên \(.applicationName)"
             ],
             shortTitle: "Hỏi AI Offline",
             systemImageName: "lock.shield.fill"

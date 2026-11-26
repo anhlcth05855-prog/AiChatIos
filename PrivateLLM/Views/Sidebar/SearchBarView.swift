@@ -27,7 +27,7 @@ public struct SearchBarView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Color.appSecondaryBackground)
         .cornerRadius(10)
     }
 }

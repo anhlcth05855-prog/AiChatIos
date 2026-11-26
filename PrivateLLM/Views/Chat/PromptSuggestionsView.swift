@@ -77,7 +77,7 @@ public struct PromptSuggestionsView: View {
                         }
                         .padding(.horizontal, 10)
                         .padding(.vertical, 10)
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color.appSecondaryBackground)
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)

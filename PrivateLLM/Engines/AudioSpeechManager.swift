@@ -11,6 +11,7 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
+    private var hasInstalledTap: Bool = false
     
     @Published public var isSpeaking: Bool = false
     @Published public var isRecording: Bool = false
@@ -28,6 +29,16 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
             synthesizer.stopSpeaking(at: .immediate)
         }
         
+        #if os(iOS)
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback, mode: .spokenAudio, options: [.duckOthers])
+            try session.setActive(true)
+        } catch {
+            print("[AudioSpeechManager] TTS audio session error: \(error)")
+        }
+        #endif
+        
         let cleanText = text
             .replacingOccurrences(of: "*", with: "")
             .replacingOccurrences(of: "#", with: "")
@@ -39,7 +50,9 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
         utterance.rate = 0.52
         utterance.pitchMultiplier = 1.0
         
-        isSpeaking = true
+        DispatchQueue.main.async {
+            self.isSpeaking = true
+        }
         synthesizer.speak(utterance)
     }
     
@@ -47,7 +60,9 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
         if synthesizer.isSpeaking {
             synthesizer.stopSpeaking(at: .immediate)
         }
-        isSpeaking = false
+        DispatchQueue.main.async {
+            self.isSpeaking = false
+        }
     }
     
     public func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
@@ -65,33 +80,80 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
     // MARK: - Speech Recognition (STT)
     
     public func requestSpeechAuthorization(completion: @escaping (Bool) -> Void) {
-        SFSpeechRecognizer.requestAuthorization { status in
-            DispatchQueue.main.async {
-                completion(status == .authorized)
+        SFSpeechRecognizer.requestAuthorization { speechStatus in
+            guard speechStatus == .authorized else {
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
             }
+            
+            #if os(iOS)
+            if #available(iOS 17.0, *) {
+                AVAudioApplication.requestRecordPermission { micGranted in
+                    DispatchQueue.main.async {
+                        completion(micGranted)
+                    }
+                }
+            } else {
+                AVAudioSession.sharedInstance().requestRecordPermission { micGranted in
+                    DispatchQueue.main.async {
+                        completion(micGranted)
+                    }
+                }
+            }
+            #else
+            DispatchQueue.main.async {
+                completion(true)
+            }
+            #endif
         }
     }
     
     public func startRecording(langCode: String = "vi", onResult: @escaping (String) -> Void) {
-        if audioEngine.isRunning {
+        if audioEngine.isRunning || isRecording {
             stopRecording()
             return
         }
         
+        #if os(iOS)
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker, .duckOthers])
+            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        } catch {
+            print("[AudioSpeechManager] AudioSession setup error: \(error)")
+            stopRecording()
+            return
+        }
+        #endif
+        
         let localeTag = getVoiceLanguageTag(langCode)
         speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: localeTag))
         
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-        guard let recognitionRequest = recognitionRequest else { return }
-        recognitionRequest.shouldReportPartialResults = true
+        guard let speechRecognizer = speechRecognizer, speechRecognizer.isAvailable else {
+            print("[AudioSpeechManager] Speech recognizer unavailable for locale: \(localeTag)")
+            stopRecording()
+            return
+        }
+        
+        let request = SFSpeechAudioBufferRecognitionRequest()
+        request.shouldReportPartialResults = true
+        self.recognitionRequest = request
         
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
-            self.recognitionRequest?.append(buffer)
+        if hasInstalledTap {
+            inputNode.removeTap(onBus: 0)
+            hasInstalledTap = false
         }
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
+            self?.recognitionRequest?.append(buffer)
+        }
+        hasInstalledTap = true
         
-        recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
+        recognitionTask = speechRecognizer.recognitionTask(with: request) { [weak self] result, error in
+            guard let self = self else { return }
             if let result = result {
                 let transcription = result.bestTranscription.formattedString
                 DispatchQueue.main.async {
@@ -100,14 +162,18 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
                 }
             }
             if error != nil || (result?.isFinal ?? false) {
-                self.stopRecording()
+                DispatchQueue.main.async {
+                    self.stopRecording()
+                }
             }
         }
         
         do {
             audioEngine.prepare()
             try audioEngine.start()
-            isRecording = true
+            DispatchQueue.main.async {
+                self.isRecording = true
+            }
         } catch {
             print("[AudioSpeechManager] Audio engine start error: \(error)")
             stopRecording()
@@ -117,13 +183,23 @@ public final class AudioSpeechManager: NSObject, ObservableObject, AVSpeechSynth
     public func stopRecording() {
         if audioEngine.isRunning {
             audioEngine.stop()
-            audioEngine.inputNode.removeTap(onBus: 0)
-            recognitionRequest?.endAudio()
-            recognitionTask?.cancel()
         }
+        if hasInstalledTap {
+            audioEngine.inputNode.removeTap(onBus: 0)
+            hasInstalledTap = false
+        }
+        recognitionRequest?.endAudio()
+        recognitionTask?.cancel()
         recognitionRequest = nil
         recognitionTask = nil
-        isRecording = false
+        
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        #endif
+        
+        DispatchQueue.main.async {
+            self.isRecording = false
+        }
     }
     
     private func getVoiceLanguageTag(_ langCode: String) -> String {

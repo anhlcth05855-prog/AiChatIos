@@ -50,12 +50,12 @@ public struct ChatView: View {
                     }
                     .padding(.vertical, 8)
                 }
-                .onChange(of: viewModel.currentSession.messages.last?.content) { _ in
+                .onChange(of: viewModel.currentSession.messages.last?.content) {
                     withAnimation(.easeOut(duration: 0.2)) {
                         proxy.scrollTo("BottomAnchor", anchor: .bottom)
                     }
                 }
-                .onChange(of: viewModel.currentSession.messages.count) { _ in
+                .onChange(of: viewModel.currentSession.messages.count) {
                     withAnimation(.easeOut(duration: 0.25)) {
                         proxy.scrollTo("BottomAnchor", anchor: .bottom)
                     }
@@ -70,14 +70,16 @@ public struct ChatView: View {
                 onStop: { viewModel.cancelGeneration() }
             )
         }
-        .background(Color(UIColor.systemGroupedBackground).ignoresSafeArea())
+        .background(Color.appGroupedBackground.ignoresSafeArea())
         .sheet(isPresented: $showModelSheet) {
             ModelCatalogSheetView()
         }
+        #if canImport(UIKit)
         .sheet(isPresented: $showShareSheet) {
             if let url = exportURL {
                 ShareSheetView(activityItems: [url])
             }
         }
+        #endif
     }
 }

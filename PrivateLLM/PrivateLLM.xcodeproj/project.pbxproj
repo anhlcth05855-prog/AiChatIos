@@ -54,6 +54,8 @@
 		A10000452C1B000100000045 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000452C1B000100000045 /* SettingsView.swift */; };
 		A10000462C1B000100000046 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000462C1B000100000046 /* ShareSheetView.swift */; };
 		A10000472C1B000100000047 /* MainSplitNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000472C1B000100000047 /* MainSplitNavigationView.swift */; };
+		A10000492C1B000100000049 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10000492C1B000100000049 /* Assets.xcassets */; };
+		A10000502C1B000100000050 /* PlatformColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000502C1B000100000050 /* PlatformColors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +108,8 @@
 		B10000462C1B000100000046 /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
 		B10000472C1B000100000047 /* MainSplitNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitNavigationView.swift; sourceTree = "<group>"; };
 		B10000482C1B000100000048 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10000492C1B000100000049 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B10000502C1B000100000050 /* PlatformColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformColors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +143,7 @@
 			children = (
 				B10000012C1B000100000001 /* PrivateLLMApp.swift */,
 				B10000482C1B000100000048 /* Info.plist */,
+				B10000492C1B000100000049 /* Assets.xcassets */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 				B10000222C1B000100000022 /* PDFExportService.swift */,
 				B10000232C1B000100000023 /* MarkdownExportService.swift */,
 				B10000242C1B000100000024 /* HapticsManager.swift */,
+				B10000502C1B000100000050 /* PlatformColors.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -216,6 +222,18 @@
 			isa = PBXGroup;
 			children = (
 				B10000472C1B000100000047 /* MainSplitNavigationView.swift */,
+				D10000102C1B000100000010 /* Chat */,
+				D10000112C1B000100000011 /* Sidebar */,
+				D10000122C1B000100000012 /* Models */,
+				D10000132C1B000100000013 /* Settings */,
+				D10000142C1B000100000014 /* Export */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D10000102C1B000100000010 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
 				B10000292C1B000100000029 /* TypingIndicatorView.swift */,
 				B10000302C1B000100000030 /* CodeBlockView.swift */,
 				B10000312C1B000100000031 /* MessageBubbleView.swift */,
@@ -223,19 +241,47 @@
 				B10000332C1B000100000033 /* MessageInputBarView.swift */,
 				B10000342C1B000100000034 /* ChatHeaderView.swift */,
 				B10000352C1B000100000035 /* ChatView.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		D10000112C1B000100000011 /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
 				B10000362C1B000100000036 /* SessionRowView.swift */,
 				B10000372C1B000100000037 /* SearchBarView.swift */,
 				B10000382C1B000100000038 /* SessionListView.swift */,
+			);
+			path = Sidebar;
+			sourceTree = "<group>";
+		};
+		D10000122C1B000100000012 /* Models */ = {
+			isa = PBXGroup;
+			children = (
 				B10000392C1B000100000039 /* HardwareBadgeView.swift */,
 				B10000402C1B000100000040 /* ModelCardView.swift */,
 				B10000412C1B000100000041 /* ModelCatalogSheetView.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D10000132C1B000100000013 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
 				B10000422C1B000100000042 /* StoreKitPaywallView.swift */,
 				B10000432C1B000100000043 /* SystemPromptEditorView.swift */,
 				B10000442C1B000100000044 /* AdvancedInferenceSettingsView.swift */,
 				B10000452C1B000100000045 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		D10000142C1B000100000014 /* Export */ = {
+			isa = PBXGroup;
+			children = (
 				B10000462C1B000100000046 /* ShareSheetView.swift */,
 			);
-			path = Views;
+			path = Export;
 			sourceTree = "<group>";
 		};
 		D10000092C1B000100000009 /* Products */ = {
@@ -255,6 +301,7 @@
 			buildPhases = (
 				G10000002C1B000100000000 /* Sources */,
 				C10000002C1B000100000000 /* Frameworks */,
+				R10000002C1B000100000000 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -298,6 +345,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		R10000002C1B000100000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000492C1B000100000049 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		G10000002C1B000100000000 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -327,6 +385,7 @@
 				A10000222C1B000100000022 /* PDFExportService.swift in Sources */,
 				A10000232C1B000100000023 /* MarkdownExportService.swift in Sources */,
 				A10000242C1B000100000024 /* HapticsManager.swift in Sources */,
+				A10000502C1B000100000050 /* PlatformColors.swift in Sources */,
 				A10000252C1B000100000025 /* ChatViewModel.swift in Sources */,
 				A10000262C1B000100000026 /* ModelManagerViewModel.swift in Sources */,
 				A10000272C1B000100000027 /* SessionsListViewModel.swift in Sources */,
@@ -376,6 +435,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -397,6 +457,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -405,7 +466,7 @@
 			name = Release;
 		};
 		F10000012C1B000100000001 /* Debug */ = {
-			isa = XCBuildConfiguration;
+			isa = PBXBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -427,7 +488,7 @@
 			name = Debug;
 		};
 		F10000022C1B000100000002 /* Release */ = {
-			isa = XCBuildConfiguration;
+			isa = PBXBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
