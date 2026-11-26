@@ -17,9 +17,15 @@ jobs:
 
       - name: Inspect Xcode and Project
         run: |
-          xcodebuild -version
-          plutil -lint PrivateLLM/PrivateLLM.xcodeproj/project.pbxproj
-          xcodebuild -project PrivateLLM/PrivateLLM.xcodeproj -list
+          {
+            xcodebuild -version
+            plutil -lint PrivateLLM/PrivateLLM.xcodeproj/project.pbxproj
+            xcodebuild -project PrivateLLM/PrivateLLM.xcodeproj -list
+          } > inspect.log 2>&1 || {
+            ERR=$(cat inspect.log | tr '\n' ' ' | sed 's/  */ /g')
+            echo "::error::INSPECT FAILED: $ERR"
+            exit 1
+          }
 
       - name: Build iOS Simulator (Debug)
         run: |
@@ -65,6 +71,7 @@ jobs:
         with:
           name: xcodebuild-logs
           path: |
+            inspect.log
             sim-build.log
             ios-build.log
 
