@@ -32,14 +32,21 @@ public final class ModelManagerViewModel: ObservableObject {
     }
     
     public func downloadModel(_ model: LocalModelItem) {
+        if !hardwareMonitor.canSafelyRun(requiredRamBytes: model.requiredRamBytes) {
+            alertMessage = "⚠️ RAM khả dụng (\(hardwareMonitor.currentSpecs.formattedAvailableRam)) thấp hơn mức khuyến nghị (\(model.formattedRequiredRam)) cho \(model.name). Quá trình tải vẫn tiếp tục; nếu máy yếu hơn, bạn nên dùng Qwen 2.5 Mini (0.5B)."
+            showAlert = true
+        }
         #if canImport(UIKit)
         HapticsManager.shared.impact(.medium)
         #endif
-        downloadManager.simulateQuickDownload(for: model.id) {
-            #if canImport(UIKit)
-            HapticsManager.shared.notify(.success)
-            #endif
-        }
+        downloadManager.startRealDownload(for: model.id)
+    }
+    
+    public func cancelDownload(_ model: LocalModelItem) {
+        #if canImport(UIKit)
+        HapticsManager.shared.impact(.light)
+        #endif
+        downloadManager.cancelDownload(for: model.id)
     }
     
     public func deleteModel(_ model: LocalModelItem) {

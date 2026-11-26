@@ -5,6 +5,7 @@ public struct ModelCardView: View {
     public let isActive: Bool
     public let onSelect: () -> Void
     public let onDownload: () -> Void
+    public let onCancelDownload: (() -> Void)?
     public let onDelete: () -> Void
     
     public init(
@@ -12,12 +13,14 @@ public struct ModelCardView: View {
         isActive: Bool,
         onSelect: @escaping () -> Void,
         onDownload: @escaping () -> Void,
+        onCancelDownload: (() -> Void)? = nil,
         onDelete: @escaping () -> Void
     ) {
         self.model = model
         self.isActive = isActive
         self.onSelect = onSelect
         self.onDownload = onDownload
+        self.onCancelDownload = onCancelDownload
         self.onDelete = onDelete
     }
     
@@ -82,7 +85,7 @@ public struct ModelCardView: View {
                         .tint(Color.accentColor)
                     
                     HStack {
-                        Text("Đang tải dữ liệu...")
+                        Text(model.downloadSpeed ?? "Đang tải trọng số GGUF...")
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
                         Spacer()
@@ -112,7 +115,7 @@ public struct ModelCardView: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: 12))
                                 .foregroundColor(.green)
-                            Text("Đang kích hoạt")
+                            Text("Sẵn sàng Offline")
                                 .font(.system(size: 12, weight: .semibold))
                                 .foregroundColor(.green)
                         }
@@ -130,18 +133,36 @@ public struct ModelCardView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     
-                } else if model.status != .downloading {
+                } else if model.status == .downloading {
+                    if let cancel = onCancelDownload {
+                        Button(action: cancel) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "xmark.circle")
+                                    .font(.system(size: 12, weight: .bold))
+                                Text("Hủy tải")
+                                    .font(.system(size: 12.5, weight: .semibold))
+                            }
+                            .foregroundColor(.red)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 7)
+                            .background(Color.red.opacity(0.12))
+                            .cornerRadius(8)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    Spacer()
+                } else {
                     Button(action: onDownload) {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.down.to.line")
                                 .font(.system(size: 12, weight: .bold))
-                            Text("Tải mô hình")
+                            Text(model.status == .error ? "Thử tải lại" : "Tải mô hình")
                                 .font(.system(size: 12.5, weight: .semibold))
                         }
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(model.status == .error ? .orange : .accentColor)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 7)
-                        .background(Color.accentColor.opacity(0.12))
+                        .background((model.status == .error ? Color.orange : Color.accentColor).opacity(0.12))
                         .cornerRadius(8)
                     }
                     .buttonStyle(PlainButtonStyle())

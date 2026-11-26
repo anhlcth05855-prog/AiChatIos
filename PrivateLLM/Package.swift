@@ -14,11 +14,15 @@ let package = Package(
             targets: ["PrivateLLMKit"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/mattt/llama.swift", exact: "2.10549.0")
+    ],
     targets: [
         .target(
             name: "PrivateLLMKit",
-            dependencies: [],
+            dependencies: [
+                .product(name: "LlamaSwift", package: "llama.swift")
+            ],
             path: ".",
             exclude: [
                 "PrivateLLM.xcodeproj",

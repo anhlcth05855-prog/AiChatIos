@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ModelCatalogSheetView: View {
     @StateObject private var viewModel = ModelManagerViewModel()
+    @ObservedObject private var downloadManager = ModelDownloadManager.shared
     @Environment(\.dismiss) private var dismiss
     
     public init() {}
@@ -13,6 +14,31 @@ public struct ModelCatalogSheetView: View {
                     // Hardware info banner
                     HardwareBadgeView()
                         .padding(.horizontal, 16)
+                    
+                    // Offline Guide Banner
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "airplane.circle.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(.accentColor)
+                        Text("Tải mô hình 1 lần qua Wi-Fi, sau đó tắt Wi-Fi vẫn chat thông minh 100% On-Device trên chip Apple Silicon (Metal). Gợi ý: Qwen 2.5 Mini (0.5B) hoặc Qwen 3 (1.7B).")
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(10)
+                    .background(Color.accentColor.opacity(0.08))
+                    .cornerRadius(10)
+                    .padding(.horizontal, 16)
+                    
+                    if let err = downloadManager.lastErrorMessage {
+                        Text(err)
+                            .font(.system(size: 12))
+                            .foregroundColor(.red)
+                            .padding(10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(10)
+                            .padding(.horizontal, 16)
+                    }
                     
                     // Filter Chips
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -30,9 +56,10 @@ public struct ModelCatalogSheetView: View {
                         ForEach(viewModel.filteredModels) { model in
                             ModelCardView(
                                 model: model,
-                                isActive: model.id == viewModel.downloadManager.activeModelId,
+                                isActive: model.id == downloadManager.activeModelId,
                                 onSelect: { viewModel.selectActiveModel(model) },
                                 onDownload: { viewModel.downloadModel(model) },
+                                onCancelDownload: { viewModel.cancelDownload(model) },
                                 onDelete: { viewModel.deleteModel(model) }
                             )
                         }

@@ -54,7 +54,16 @@ public final class ChatViewModel: ObservableObject {
         #endif
         
         let config = settingsViewModel.config
-        let activeModel = modelDownloadManager.getActiveModel()
+        var activeModel = modelDownloadManager.getActiveModel()
+        
+        // If active model isn't downloaded yet, auto-switch to any downloaded offline model if available
+        if config.selectedProvider == .privateLLM,
+           modelDownloadManager.getModelFilePath(for: activeModel.id) == nil,
+           let readyModel = modelDownloadManager.firstReadyModel() {
+            activeModel = readyModel
+            modelDownloadManager.setActiveModel(id: readyModel.id)
+        }
+        
         currentSession.modelId = activeModel.id
         
         let userMsg = ChatMessage(
@@ -111,28 +120,69 @@ public final class ChatViewModel: ObservableObject {
             do {
                 let finalText: String
                 switch config.selectedProvider {
-                case .privateLLM, .mockOffline:
-                    let params = InferenceParameters(
-                        temperature: config.temperature,
-                        topP: config.topP,
-                        maxTokens: config.maxTokens,
-                        systemPrompt: effectiveSystemPrompt,
-                        language: config.appLanguage
-                    )
-                    let stream = metalEngine.generateStream(
-                        prompt: textToSend,
-                        history: historySnapshot,
-                        parameters: params
-                    )
-                    var latest = ""
-                    for try await partial in stream {
-                        if Task.isCancelled { break }
-                        latest = partial
-                        self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
-                            msg.content = partial
+                case .privateLLM:
+                    if let modelPath = modelDownloadManager.getModelFilePath(for: activeModel.id) {
+                        if !metalEngine.isLoaded || metalEngine.currentModelName != activeModel.name {
+                            self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                                msg.content = "⏳ Đang nạp mô hình **\(activeModel.name)** vào Apple Silicon Metal..."
+                            }
+                            try await metalEngine.initialize(modelPath: modelPath, contextWindow: activeModel.contextWindow)
+                            self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                                msg.content = ""
+                            }
                         }
+                        
+                        let params = InferenceParameters(
+                            temperature: config.temperature,
+                            topP: config.topP,
+                            maxTokens: config.maxTokens,
+                            systemPrompt: effectiveSystemPrompt,
+                            language: config.appLanguage
+                        )
+                        let stream = metalEngine.generateStream(
+                            prompt: textToSend,
+                            history: historySnapshot.dropLast(), // exclude current user message (passed as prompt)
+                            parameters: params
+                        )
+                        var latest = ""
+                        for try await partial in stream {
+                            if Task.isCancelled { break }
+                            latest = partial
+                            self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                                msg.content = partial
+                            }
+                        }
+                        finalText = latest
+                    } else {
+                        let guideText = """
+                        ⚠️ **Chưa có mô hình AI Offline (.gguf) được tải về máy.**
+
+                        Để AI trả lời thông minh mọi câu hỏi khi tắt Wi-Fi, bạn hãy bật mạng 1 lần để tải mô hình về thiết bị:
+                        1. Nhấn vào tên mô hình **\(activeModel.name)** ở thanh trên cùng.
+                        2. Chọn **Tải mô hình** (gợi ý **Qwen 2.5 Mini 0.5B ~491MB** để tải nhanh và chạy mượt trên mọi iPhone, hoặc **Qwen 3 1.7B ~1.1GB** để hiểu tiếng Việt sâu hơn).
+                        3. Sau khi tải xong, bạn có thể **tắt Wi-Fi hoàn toàn** và chat tự nhiên 100% On-Device!
+                        """
+                        self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                            msg.content = guideText
+                        }
+                        finalText = guideText
                     }
-                    finalText = latest
+                    
+                case .mockOffline:
+                    _ = OfflineKnowledgeEngine.shared.analyzeAndLearn(from: textToSend, lang: config.appLanguage)
+                    let reply = OfflineKnowledgeEngine.shared.generateKnowledgeResponse(for: textToSend, lang: config.appLanguage)
+                    let words = reply.components(separatedBy: " ")
+                    var accumulated = ""
+                    for (index, word) in words.enumerated() {
+                        try Task.checkCancellation()
+                        if index > 0 { accumulated += " " }
+                        accumulated += word
+                        self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
+                            msg.content = accumulated
+                        }
+                        try await Task.sleep(nanoseconds: 20_000_000)
+                    }
+                    finalText = reply
                     
                 case .googleGemini:
                     let reply = try await CloudGeminiEngine.shared.generateContent(
@@ -140,7 +190,7 @@ public final class ChatViewModel: ObservableObject {
                         model: config.geminiModel,
                         prompt: textToSend,
                         systemInstruction: effectiveSystemPrompt,
-                        history: historySnapshot
+                        history: Array(historySnapshot.dropLast())
                     )
                     try Task.checkCancellation()
                     self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
@@ -154,7 +204,7 @@ public final class ChatViewModel: ObservableObject {
                         model: config.openAiModel,
                         prompt: textToSend,
                         systemInstruction: effectiveSystemPrompt,
-                        history: historySnapshot
+                        history: Array(historySnapshot.dropLast())
                     )
                     try Task.checkCancellation()
                     self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
@@ -195,7 +245,7 @@ public final class ChatViewModel: ObservableObject {
                 }
             } catch {
                 self.updateAssistantMessage(id: assistantMsgId, inSession: targetSessionId) { msg in
-                    if msg.content.isEmpty {
+                    if msg.content.isEmpty || msg.content.hasPrefix("⏳") {
                         msg.content = "⚠️ Lỗi: \(error.localizedDescription)"
                     } else {
                         msg.content += "\n\n⚠️ Đã dừng: \(error.localizedDescription)"

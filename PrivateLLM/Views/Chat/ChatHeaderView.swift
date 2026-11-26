@@ -23,7 +23,14 @@ public struct ChatHeaderView: View {
     private var headerSubtitle: String {
         switch settingsViewModel.config.selectedProvider {
         case .privateLLM:
-            return "100% On-Device & Offline"
+            let active = downloadManager.getActiveModel()
+            if downloadManager.getModelFilePath(for: active.id) != nil {
+                return "100% On-Device • Sẵn sàng Offline"
+            } else if active.status == .downloading {
+                return "Đang tải mô hình (\(Int(active.downloadProgress * 100))%)..."
+            } else {
+                return "Chạm để tải mô hình Offline"
+            }
         case .mockOffline:
             return "Offline Knowledge Engine"
         case .googleGemini:

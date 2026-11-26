@@ -26,9 +26,9 @@ public struct ModelCatalog {
             family: .qwen,
             parameterSize: "0.5B",
             quantization: "4-bit GGUF (Q4_K_M)",
-            description: "Mô hình siêu nhẹ chỉ ~380MB, phản hồi chớp nhoáng ~40 tokens/giây trên Apple Neural Engine. Rất thích hợp cho giải đáp nhanh và thiết bị RAM 4GB.",
+            description: "Mô hình siêu nhẹ chỉ ~491MB, phản hồi chớp nhoáng trên Apple Silicon. Rất thích hợp cho giải đáp nhanh và thiết bị RAM 4GB.",
             downloadUrl: "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_k_m.gguf",
-            sizeBytes: 398_458_880, // ~380 MB
+            sizeBytes: 491_400_032, // ~491 MB
             requiredRamBytes: 838_860_800, // ~800 MB
             localFileName: "qwen2.5-0.5b-instruct-q4_k_m.gguf",
             contextWindow: 4096,
