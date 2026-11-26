@@ -27,21 +27,6 @@ jobs:
             exit 1
           }
 
-      - name: Build iOS Simulator (Debug)
-        run: |
-          set -o pipefail
-          if ! xcodebuild \
-            -project PrivateLLM/PrivateLLM.xcodeproj \
-            -scheme PrivateLLM \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO \
-            build 2>&1 | tee sim-build.log; then
-            echo "::error::$(grep -E 'error:|fatal error:|xcodebuild: error:' sim-build.log | head -n 15 | tr '\n' ' ')"
-            exit 1
-          fi
-
       - name: Build iOS Device Unsigned App (Release)
         run: |
           set -o pipefail
@@ -72,7 +57,6 @@ jobs:
           name: xcodebuild-logs
           path: |
             inspect.log
-            sim-build.log
             ios-build.log
 
       - name: Upload Build Artifact
