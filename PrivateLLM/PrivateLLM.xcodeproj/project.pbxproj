@@ -466,7 +466,7 @@
 			name = Release;
 		};
 		F10000012C1B000100000001 /* Debug */ = {
-			isa = PBXBuildConfiguration;
+			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -488,7 +488,7 @@
 			name = Debug;
 		};
 		F10000022C1B000100000002 /* Release */ = {
-			isa = PBXBuildConfiguration;
+			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
